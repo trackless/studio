@@ -15,10 +15,9 @@ repositories {
 }
 
 dependencies {
-	implementation  group: 'org.netbeans.api', name: 'org-openide-awt', version: 'RELEASE113'
-//    compile group: 'org.jfree', name: 'jfreechart', version: '1.0.13'
-	implementation  group: 'org.jfree', name: 'jfreechart', version: '1.0.14'
-    runtimeOnly files ('lib/images.jar')
+    implementation group: 'org.netbeans.api', name: 'org-openide-awt', version: 'RELEASE190'
+    implementation group: 'org.jfree', name: 'jfreechart', version: '1.5.3'
+    runtimeOnly files('lib/images.jar')
 }
 
 sourceSets {
