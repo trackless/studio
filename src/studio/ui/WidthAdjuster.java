@@ -1,6 +1,7 @@
 package studio.ui;
 
 import studio.kdb.*;
+
 import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
@@ -39,8 +40,7 @@ public class WidthAdjuster extends MouseAdapter {
                         ktm.asc(column);
 
                     ktm.fireTableDataChanged();
-                    if (h != null)
-                        h.repaint();
+                    h.repaint();
                 }
             }
         }
@@ -54,8 +54,10 @@ public class WidthAdjuster extends MouseAdapter {
         Cursor cursor = getTableHeader().getCursor();
         return cursor.equals(EAST) || cursor.equals(WEST);
     }
+
     private static final Cursor EAST = Cursor.getPredefinedCursor(Cursor.E_RESIZE_CURSOR);
     private static final Cursor WEST = Cursor.getPredefinedCursor(Cursor.W_RESIZE_CURSOR);
+
     //if near the boundary, will choose left column
     private int getLeftColumn(Point pt) {
         pt.x -= EPSILON;
@@ -63,7 +65,7 @@ public class WidthAdjuster extends MouseAdapter {
     }
 
     public void resizeAllColumns() {
-        for (int i = 0;i < table.getColumnCount();i++)
+        for (int i = 0; i < table.getColumnCount(); i++)
             resize(i);
     }
 
@@ -74,8 +76,8 @@ public class WidthAdjuster extends MouseAdapter {
         if (tcr == null)
             tcr = table.getTableHeader().getDefaultRenderer();
 
-        int maxWidth = 0;
-        Component comp = tcr.getTableCellRendererComponent(table,tc.getHeaderValue(),false,false,0,col);
+        int maxWidth;
+        Component comp = tcr.getTableCellRendererComponent(table, tc.getHeaderValue(), false, false, 0, col);
         maxWidth = comp.getPreferredSize().width;
 
         int ub = table.getRowCount();
@@ -85,17 +87,18 @@ public class WidthAdjuster extends MouseAdapter {
         if (stepSize == 0)
             stepSize = 1;
 
-        for (int i = 0;i < ub;i += stepSize) {
-            tcr = table.getCellRenderer(i,col);
-            Object obj = table.getValueAt(i,col);
-            comp = tcr.getTableCellRendererComponent(table,obj,false,false,i,col);
-            maxWidth = Math.max(maxWidth,comp.getPreferredSize().width);
+        for (int i = 0; i < ub; i += stepSize) {
+            tcr = table.getCellRenderer(i, col);
+            Object obj = table.getValueAt(i, col);
+            comp = tcr.getTableCellRendererComponent(table, obj, false, false, i, col);
+            maxWidth = Math.max(maxWidth, comp.getPreferredSize().width);
         }
 
         maxWidth += 10; //and room to grow...
         tc.setPreferredWidth(maxWidth); //remembers the value
         tc.setWidth(maxWidth);          //forces layout, repaint
     }
-    private JTable table;
+
+    private final JTable table;
     private static final int EPSILON = 5;   //boundary sensitivity
 }

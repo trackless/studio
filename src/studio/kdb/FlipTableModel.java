@@ -2,7 +2,7 @@ package studio.kdb;
 
 public class FlipTableModel extends KTableModel {
 
-    private K.Flip flip;
+    private final K.Flip flip;
 
     public FlipTableModel(K.Flip obj) {
         flip = obj;
@@ -23,4 +23,4 @@ public class FlipTableModel extends KTableModel {
     public K.KBaseVector getColumn(int col) {
         return (K.KBaseVector) flip.y.at(col);
     }
-};
+}

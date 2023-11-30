@@ -17,8 +17,8 @@ import java.util.Map;
 import java.util.UUID;
 
 public class K {
-    private static SimpleDateFormat formatter = new SimpleDateFormat();
-    private static DecimalFormat nsFormatter = new DecimalFormat("000000000");
+    private static final SimpleDateFormat formatter = new SimpleDateFormat();
+    private static final DecimalFormat nsFormatter = new DecimalFormat("000000000");
 
     static {
         formatter.setTimeZone(java.util.TimeZone.getTimeZone("GMT"));
@@ -60,12 +60,6 @@ public class K {
             write(o, (byte) type);
         }
 
-
-        /*        public String toString(boolean showType) {
-                    return "";
-                }
-                ;
-        */
         public String toString() {
             return toString(true);
         }
@@ -84,7 +78,7 @@ public class K {
             this.attr = attr;
         }
 
-        private static String[] sAttr = new String[]{"", "`s#", "`u#", "`p#", "`g#"};
+        private static final String[] sAttr = new String[]{"", "`s#", "`u#", "`p#", "`g#"};
 
         public String toString(boolean showType) {
             if (attr <= sAttr.length)
@@ -227,7 +221,7 @@ public class K {
             return "Function";
         }
 
-        private String body;
+        private final String body;
 
         public Function(KCharacterVector body) {
             type = 100;
@@ -252,7 +246,7 @@ public class K {
             return "Primitive";
         }
 
-        private int primitive;
+        private final int primitive;
         private String s = " ";
 
         public Primitive(String[] ops, int i) {
@@ -275,7 +269,7 @@ public class K {
             return "Projection";
         }
 
-        private K.KList objs;
+        private final K.KList objs;
 
         public Projection(K.KList objs) {
             type = 104;
@@ -371,7 +365,7 @@ public class K {
     }
 
     public static class UnaryPrimitive extends Primitive {
-        private static String[] ops = {"::", "+:", "-:", "*:", "%:", "&:", "|:", "^:", "=:", "<:", ">:", "$:", ",:", "#:", "_:", "~:", "!:", "?:", "@:", ".:", "0::", "1::", "2::", "avg", "last", "sum", "prd", "min", "max", "exit", "getenv", "abs", "sqrt", "log", "exp", "sin", "asin", "cos", "acos", "tan", "atan", "enlist", "var", "dev", "hopen"};
+        private static final String[] ops = {"::", "+:", "-:", "*:", "%:", "&:", "|:", "^:", "=:", "<:", ">:", "$:", ",:", "#:", "_:", "~:", "!:", "?:", "@:", ".:", "0::", "1::", "2::", "avg", "last", "sum", "prd", "min", "max", "exit", "getenv", "abs", "sqrt", "log", "exp", "sin", "asin", "cos", "acos", "tan", "atan", "enlist", "var", "dev", "hopen"};
 
         public UnaryPrimitive(int i) {
             super(ops, i);
@@ -572,7 +566,7 @@ public class K {
         }
 
         public boolean isNull() {
-            return s.length() == 0;
+            return s.isEmpty();
         }
 
         public void toString(Writer w, boolean showType) throws IOException {
@@ -1056,7 +1050,7 @@ public class K {
         public Date toDate() {
             int m = i + 24000, y = m / 12;
             Calendar cal = Calendar.getInstance();
-            cal.set(y, m, 01);
+            cal.set(y, m, 1);
             return cal.getTime();
         }
 
@@ -1138,7 +1132,7 @@ public class K {
         public Date toDate() {
             Calendar cal = Calendar.getInstance();
             cal.set(Calendar.HOUR, i / (60 * 60));
-            cal.set(Calendar.MINUTE, (int) ((i % (60 * 60)) / 60));
+            cal.set(Calendar.MINUTE, (i % (60 * 60)) / 60);
             cal.set(Calendar.SECOND, i % 60);
             return cal.getTime();
         }

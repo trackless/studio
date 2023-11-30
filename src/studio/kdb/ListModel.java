@@ -1,11 +1,12 @@
 package studio.kdb;
 
 public class ListModel extends KTableModel {
-    private K.KBaseVector list;
+    private final K.KBaseVector list;
 
     public ListModel(K.KBaseVector list) {
         this.list = list;
     }
+
     @Override
     public boolean isKey(int column) {
         return false;

@@ -20,7 +20,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.StringTokenizer;
 
-public class ServerList extends EscapeDialog implements TreeExpansionListener  {
+public class ServerList extends EscapeDialog implements TreeExpansionListener {
 
     private JPanel contentPane;
     private JTree tree;
@@ -28,8 +28,8 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
     private JTextField filter;
     private JToggleButton tglBtnBoxTree;
     private boolean ignoreExpansionListener = false;
-    private java.util.Set<TreePath> expandedPath = new HashSet<>();
-    private java.util.Set<TreePath> collapsedPath = new HashSet<>();
+    private final java.util.Set<TreePath> expandedPath = new HashSet<>();
+    private final java.util.Set<TreePath> collapsedPath = new HashSet<>();
 
     private Server selectedServer;
     private Server activeServer;
@@ -37,14 +37,14 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
 
     private JPopupMenu popupMenu;
     private UserAction selectAction, removeAction,
-                        insertFolderAction, insertServerAction,
-                        addServerBeforeAction, addServerAfterAction,
-                        addFolderBeforeAction, addFolderAfterAction;
+            insertFolderAction, insertServerAction,
+            addServerBeforeAction, addServerAfterAction,
+            addFolderBeforeAction, addFolderAfterAction;
 
     public final static int DEFAULT_WIDTH = 300;
     public final static int DEFAULT_HEIGHT = 400;
 
-    private final static int menuShortcutKeyMask = java.awt.Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
+    private final static int menuShortcutKeyMask = Toolkit.getDefaultToolkit().getMenuShortcutKeyMask();
     private final KeyStroke TREE_VIEW_KEYSTROKE = KeyStroke.getKeyStroke(KeyEvent.VK_T, menuShortcutKeyMask);
 
     public ServerList(JFrame parent) {
@@ -62,11 +62,10 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
     //Split filter text by spaces
     private java.util.List<String> getFilters() {
         java.util.List<String> filters = new ArrayList<>();
-        filters.clear();
-        StringTokenizer st = new StringTokenizer(filter.getText()," \t");
+        StringTokenizer st = new StringTokenizer(filter.getText(), " \t");
         while (st.hasMoreTokens()) {
             String word = st.nextToken().trim();
-            if (word.length()>0) filters.add(word.toLowerCase());
+            if (!word.isEmpty()) filters.add(word.toLowerCase());
         }
         return filters;
     }
@@ -92,17 +91,17 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
     private void refreshServers() {
         java.util.List<String> filters = getFilters();
 
-        if (filters.size() > 0) {
+        if (!filters.isEmpty()) {
             setRoot(filter(serverTree, filters));
             expandAll(); // expand all if we apply any filters
         } else {
             ignoreExpansionListener = true;
             setRoot(serverTree);
             //restore expanded state which was the last time (potentially was changed during filtering)
-            for (TreePath path: expandedPath) {
+            for (TreePath path : expandedPath) {
                 tree.expandPath(path);
             }
-            for (TreePath path: collapsedPath) {
+            for (TreePath path : collapsedPath) {
                 tree.collapsePath(path);
             }
             //Make sure that active server is expanded and visible
@@ -126,13 +125,13 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
 
 
     private void expandAll() {
-        ServerTreeNode root = (ServerTreeNode)treeModel.getRoot();
+        ServerTreeNode root = (ServerTreeNode) treeModel.getRoot();
         if (root == null) return;
         expandAll(root, new TreePath(root));
     }
 
     private void expandAll(ServerTreeNode parent, TreePath path) {
-        for(ServerTreeNode child:parent.childNodes() ) {
+        for (ServerTreeNode child : parent.childNodes()) {
             expandAll(child, path.pathByAddingChild(child));
         }
         tree.expandPath(path);
@@ -142,26 +141,26 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
         String value = parent.isFolder() ? parent.getFolder() : parent.getServer().getDescription(false);
         value = value.toLowerCase();
         java.util.List<String> left = new ArrayList<>();
-        for(String filter:filters) {
-            if (! value.contains(filter)) {
+        for (String filter : filters) {
+            if (!value.contains(filter)) {
                 left.add(filter);
             }
         }
 
-        if (left.size() ==0) return parent.copy();
+        if (left.isEmpty()) return parent.copy();
 
         java.util.List<ServerTreeNode> children = new ArrayList<>();
-        for (ServerTreeNode child: parent.childNodes()) {
+        for (ServerTreeNode child : parent.childNodes()) {
             ServerTreeNode childFiltered = filter(child, left);
             if (childFiltered != null) {
                 children.add(childFiltered);
             }
         }
 
-        if (children.size() == 0) return null;
+        if (children.isEmpty()) return null;
 
         ServerTreeNode result = new ServerTreeNode(parent.getFolder());
-        for (ServerTreeNode child: children) {
+        for (ServerTreeNode child : children) {
             result.add(child);
         }
         return result;
@@ -174,7 +173,7 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
     @Override
     public void treeExpanded(TreeExpansionEvent event) {
         if (ignoreExpansionListener) return;
-        if (filter.getText().trim().length() > 0) return;
+        if (!filter.getText().trim().isEmpty()) return;
 
         TreePath path = event.getPath();
         collapsedPath.remove(path);
@@ -184,7 +183,7 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
     @Override
     public void treeCollapsed(TreeExpansionEvent event) {
         if (ignoreExpansionListener) return;
-        if (filter.getText().trim().length() > 0) return;
+        if (!filter.getText().trim().isEmpty()) return;
 
         TreePath path = event.getPath();
         expandedPath.remove(path);
@@ -192,7 +191,7 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
     }
 
     private void selectTreeNode() {
-        ServerTreeNode node  = (ServerTreeNode) tree.getLastSelectedPathComponent();
+        ServerTreeNode node = (ServerTreeNode) tree.getLastSelectedPathComponent();
         if (node == null) return; // no selection
         if (node.isFolder()) return;
         selectedServer = node.getServer();
@@ -218,7 +217,7 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
                 if (node.isFolder()) {
                     value = node.getFolder();
                 } else {
-                    value = node.getServer().getDescription( isListView() );
+                    value = node.getServer().getDescription(isListView());
                 }
                 if (!node.isFolder() && node.getServer().equals(activeServer)) {
                     value = "<html><b>" + value + "</b></html>";
@@ -239,6 +238,7 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
                     selectTreeNode();
                 }
             }
+
             @Override
             public void mouseReleased(MouseEvent e) {
                 if (e.isPopupTrigger()) handlePopup(e);
@@ -250,20 +250,22 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
             public void insertUpdate(DocumentEvent e) {
                 refreshServers();
             }
+
             @Override
             public void removeUpdate(DocumentEvent e) {
                 refreshServers();
             }
+
             @Override
             public void changedUpdate(DocumentEvent e) {
                 refreshServers();
             }
         });
         tglBtnBoxTree = new JToggleButton(Util.TEXT_TREE_ICON);
-        tglBtnBoxTree.setToolTipText("<html>Toggle tree/list <small>" + Util.getAcceleratorString(TREE_VIEW_KEYSTROKE) +"</small></html>");
+        tglBtnBoxTree.setToolTipText("<html>Toggle tree/list <small>" + Util.getAcceleratorString(TREE_VIEW_KEYSTROKE) + "</small></html>");
         tglBtnBoxTree.setSelectedIcon(Util.TEXT_ICON);
         tglBtnBoxTree.setFocusable(false);
-        tglBtnBoxTree.addActionListener(e->refreshServers());
+        tglBtnBoxTree.addActionListener(e -> refreshServers());
         JToolBar toolbar = new JToolBar();
         toolbar.setLayout(new BoxLayout(toolbar, BoxLayout.X_AXIS));
         toolbar.setFloatable(false);
@@ -302,8 +304,8 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
         addFolderAfterAction = UserAction.create("Add Folder After", "Add Folder after selected node",
                 KeyEvent.VK_A, e -> addNode(true, AddNodeLocation.AFTER));
 
-        UserAction toggleAction = UserAction.create("toggle", e-> toggleTreeListView());
-        UserAction focusTreeAction = UserAction.create("focus tree", e-> tree.requestFocusInWindow());
+        UserAction toggleAction = UserAction.create("toggle", e -> toggleTreeListView());
+        UserAction focusTreeAction = UserAction.create("focus tree", e -> tree.requestFocusInWindow());
 
         contentPane.getActionMap().put(toggleAction.getText(), toggleAction);
         tree.getActionMap().put(selectAction.getText(), selectAction);
@@ -324,7 +326,7 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
         TreePath path = tree.getPathForLocation(x, y);
         if (path == null) {
             return;
-        };
+        }
 
         tree.setSelectionPath(path);
 
@@ -361,7 +363,7 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
     }
 
     private void removeNode() {
-        ServerTreeNode selNode  = (ServerTreeNode) tree.getLastSelectedPathComponent();
+        ServerTreeNode selNode = (ServerTreeNode) tree.getLastSelectedPathComponent();
         if (selNode == null) return;
         ServerTreeNode node = serverTree.findPath(selNode.getPath());
         if (node == null) {
@@ -373,7 +375,7 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
         int result = JOptionPane.showConfirmDialog(this, message, "Remove?", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
         if (result != JOptionPane.YES_OPTION) return;
 
-        TreeNode[] path = ((ServerTreeNode)selNode.getParent()).getPath();
+        TreeNode[] path = ((ServerTreeNode) selNode.getParent()).getPath();
         node.removeFromParent();
         Config.getInstance().setServerTree(serverTree);
         refreshServers();
@@ -383,10 +385,10 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
         tree.setSelectionPath(treePath);
     }
 
-    private enum AddNodeLocation {INSERT, BEFORE, AFTER};
+    private enum AddNodeLocation {INSERT, BEFORE, AFTER}
 
     private void addNode(boolean folder, AddNodeLocation location) {
-        ServerTreeNode selNode  = (ServerTreeNode) tree.getLastSelectedPathComponent();
+        ServerTreeNode selNode = (ServerTreeNode) tree.getLastSelectedPathComponent();
         if (selNode == null) return;
 
         ServerTreeNode node = serverTree.findPath(selNode.getPath());
@@ -394,12 +396,12 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
             System.err.println("Ups... Something goes wrong");
             return;
         }
-        ServerTreeNode parent = location == AddNodeLocation.INSERT ? node : (ServerTreeNode)node.getParent();
+        ServerTreeNode parent = location == AddNodeLocation.INSERT ? node : (ServerTreeNode) node.getParent();
 
         ServerTreeNode newNode;
         if (folder) {
             String name = JOptionPane.showInputDialog(this, "Enter folder name", "Folder Name", JOptionPane.QUESTION_MESSAGE);
-            if (name == null || name.trim().length() == 0) return;
+            if (name == null || name.trim().isEmpty()) return;
             newNode = new ServerTreeNode(name);
         } else {
             AddServerForm addServerForm = new AddServerForm(this);
@@ -425,7 +427,7 @@ public class ServerList extends EscapeDialog implements TreeExpansionListener  {
             serverTree = Config.getInstance().getServerTree();
             System.err.println("Error adding new node: " + exception);
             exception.printStackTrace(System.err);
-            JOptionPane.showMessageDialog(this, "Error adding new node:\n" + exception.toString(), "Error", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error adding new node:\n" + exception, "Error", JOptionPane.ERROR_MESSAGE);
 
         }
         refreshServers();

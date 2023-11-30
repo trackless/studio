@@ -5,7 +5,6 @@ import studio.utils.BrowserLaunch;
 
 import javax.swing.*;
 import javax.swing.event.HyperlinkEvent;
-import javax.swing.event.HyperlinkListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -29,12 +28,9 @@ public class HelpDialog extends JDialog {
                         + "</body></html>");
         jep.setEditable(false);
         jep.setOpaque(true);
-        jep.addHyperlinkListener(new HyperlinkListener() {
-            @Override
-            public void hyperlinkUpdate(HyperlinkEvent hle) {
-                if (HyperlinkEvent.EventType.ACTIVATED.equals(hle.getEventType()))
-                    BrowserLaunch.openURL(hle.getURL().toString());
-            }
+        jep.addHyperlinkListener(hle -> {
+            if (HyperlinkEvent.EventType.ACTIVATED.equals(hle.getEventType()))
+                BrowserLaunch.openURL(hle.getURL().toString());
         });
         getContentPane().add(jep);
         JPanel buttonPane = new JPanel();

@@ -8,9 +8,9 @@ import java.util.Set;
 public class JMClassLoader extends ClassLoader {
     private Set loadedClasses = Collections.synchronizedSet(new HashSet());
 
-    public Class loadClass(String name,boolean resolve)
-        throws ClassNotFoundException {
-        Class clas = null;
+    public Class loadClass(String name, boolean resolve)
+            throws ClassNotFoundException {
+        Class clas;
 
         // If the class has already been loaded, just return it.
         clas = findLoadedClass(name);
@@ -21,12 +21,11 @@ public class JMClassLoader extends ClassLoader {
         // Try to load the class directly from disk
         try {
             // Get the raw bytes, if they are there.
-            byte classBytes[] = ClassLoaderUtil.getClassBytes(name);
+            byte[] classBytes = ClassLoaderUtil.getClassBytes(name);
 
             // We got them!  Turn the bytes into a class.
-            clas = defineClass(name,classBytes,0,classBytes.length);
-        }
-        catch (IOException ie) {
+            clas = defineClass(name, classBytes, 0, classBytes.length);
+        } catch (IOException ignored) {
         }
 
         // We weren't able to get the class, so

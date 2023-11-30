@@ -7,7 +7,7 @@ public class TabPanel extends JPanel {
     String _title;
     JComponent _component;
 
-    public TabPanel(String title,Icon icon,JComponent component) {
+    public TabPanel(String title, Icon icon, JComponent component) {
         _title = title;
         _icon = icon;
         _component = component;

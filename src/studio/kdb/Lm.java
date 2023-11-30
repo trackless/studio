@@ -8,17 +8,16 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class Lm {
-    private static int majorVersion = 3;
-    private static int minorVersion = 35;
+    private static final int majorVersion = 3;
+    private static final int minorVersion = 35;
     public static Date buildDate;
-    
+
     static {
         try {
             SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd");
             f.setTimeZone(TimeZone.getTimeZone("GMT"));
             buildDate = f.parse("20190409");
-        }
-        catch (ParseException e) {
+        } catch (ParseException ignored) {
         }
     }
 

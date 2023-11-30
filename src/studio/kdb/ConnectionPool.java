@@ -3,32 +3,36 @@ package studio.kdb;
 import studio.core.AuthenticationManager;
 import studio.core.Credentials;
 import studio.core.IAuthenticationMechanism;
+
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.io.IOException;
+
 import kx.c.K4Exception;
 
 public class ConnectionPool {
     private final static ConnectionPool instance = new ConnectionPool();
-    private final Map<Server,List<kx.c>> freeMap = new HashMap<>();
-    private final Map<Server,List<kx.c>> busyMap = new HashMap<>();
+    private final Map<Server, List<kx.c>> freeMap = new HashMap<>();
+    private final Map<Server, List<kx.c>> busyMap = new HashMap<>();
 
     public static ConnectionPool getInstance() {
         return instance;
     }
 
-    private ConnectionPool() {}
+    private ConnectionPool() {
+    }
 
     public synchronized void purge(Server s) {
         List<kx.c> list = freeMap.computeIfAbsent(s, k -> new LinkedList<>());
-        for (kx.c c: list) {
+        for (kx.c c : list) {
             c.close();
         }
         list.clear();
-        busyMap.put(s,new LinkedList<>());
+        busyMap.put(s, new LinkedList<>());
     }
 
-    public synchronized kx.c leaseConnection(Server s) throws IOException, K4Exception {
-        List<kx.c> list =  freeMap.computeIfAbsent(s, k -> new LinkedList<>());
+    public synchronized kx.c leaseConnection(Server s) {
+        List<kx.c> list = freeMap.computeIfAbsent(s, k -> new LinkedList<>());
         List<kx.c> dead = new LinkedList<>();
 
         kx.c c = null;
@@ -45,20 +49,22 @@ public class ConnectionPool {
         if (c == null) {
             try {
                 Class<?> clazz = AuthenticationManager.getInstance().lookup(s.getAuthenticationMechanism());
-                IAuthenticationMechanism authenticationMechanism = (IAuthenticationMechanism) clazz.newInstance();
+                IAuthenticationMechanism authenticationMechanism = (IAuthenticationMechanism) clazz.getDeclaredConstructor().newInstance();
 
                 authenticationMechanism.setProperties(s.getAsProperties());
                 Credentials credentials = authenticationMechanism.getCredentials();
-                if (credentials.getUsername().length() > 0) {
+                if (!credentials.getUsername().isEmpty()) {
                     String p = credentials.getPassword();
 
-                    c = new kx.c(s.getHost(), s.getPort(), credentials.getUsername() + ((p.length() == 0) ? "" : ":" + p), s.getUseTLS());
+                    c = new kx.c(s.getHost(), s.getPort(), credentials.getUsername() + ((p.isEmpty()) ? "" : ":" + p), s.getUseTLS());
                 } else
                     c = new kx.c(s.getHost(), s.getPort(), "", s.getUseTLS());
             } catch (InstantiationException | IllegalAccessException | IllegalArgumentException ex) {
                 System.err.println("Failed to initialize connection: " + ex);
                 ex.printStackTrace(System.err);
                 return null;
+            } catch (InvocationTargetException | NoSuchMethodException e) {
+                throw new RuntimeException(e);
             }
         } else {
             list.remove(c);
@@ -70,7 +76,7 @@ public class ConnectionPool {
         return c;
     }
 
-    public synchronized void freeConnection(Server s,kx.c c) {
+    public synchronized void freeConnection(Server s, kx.c c) {
         if (c == null) return;
 
         List<kx.c> list = busyMap.computeIfAbsent(s, k -> new LinkedList<>());
@@ -88,7 +94,7 @@ public class ConnectionPool {
         }
     }
 
-    public void checkConnected(kx.c c) throws IOException,K4Exception {
+    public void checkConnected(kx.c c) throws IOException, K4Exception {
         if (c.isClosed())
             c.reconnect(true);
     }

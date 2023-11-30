@@ -1,12 +1,15 @@
 package studio.kdb;
 
 import javax.swing.border.Border;
+
 import studio.ui.BlankIcon;
 import studio.ui.ScaledIcon;
 import studio.ui.Util;
+
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Insets;
+import java.util.Objects;
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
 
@@ -48,27 +51,26 @@ public class TableHeaderRenderer extends DefaultTableCellRenderer {
             if (ktm.isSortedDesc()) {
                 if (column == ktm.getSortByColumn())
                     if (ktm.getColumnClass(column) == K.KSymbolVector.class)
-                        icon = new ScaledIcon(Util.SORT_AZ_ASC_ICON,targetHeight);
+                        icon = new ScaledIcon(Objects.requireNonNull(Util.SORT_AZ_ASC_ICON), targetHeight);
                     else
-                        icon = new ScaledIcon(Util.SORT_DESC_ICON,targetHeight);
-            }
-            else if (ktm.isSortedAsc())
+                        icon = new ScaledIcon(Objects.requireNonNull(Util.SORT_DESC_ICON), targetHeight);
+            } else if (ktm.isSortedAsc())
                 if (column == ktm.getSortByColumn())
                     if (ktm.getColumnClass(column) == K.KSymbolVector.class)
-                        icon = new ScaledIcon(Util.SORT_AZ_DESC_ICON,targetHeight);
+                        icon = new ScaledIcon(Objects.requireNonNull(Util.SORT_AZ_DESC_ICON), targetHeight);
                     else
-                        icon = new ScaledIcon(Util.SORT_ASC_ICON,targetHeight);
+                        icon = new ScaledIcon(Objects.requireNonNull(Util.SORT_ASC_ICON), targetHeight);
             if (icon != null)
                 setIcon(icon);
             else {
-                icon = new ScaledIcon(Util.SORT_ASC_ICON,targetHeight);
+                icon = new ScaledIcon(Objects.requireNonNull(Util.SORT_ASC_ICON), targetHeight);
                 setIcon(new BlankIcon(icon));
             }
         }
 
         String text = " ";
         if (value != null)
-            text = value.toString() + " ";
+            text = value + " ";
 
         setText(text);
 

@@ -24,7 +24,7 @@ public class ServerTreeNode extends DefaultMutableTreeNode {
     public ServerTreeNode copy() {
         if (isFolder()) {
             ServerTreeNode parent = new ServerTreeNode(getFolder());
-            for (ServerTreeNode child: childNodes()) {
+            for (ServerTreeNode child : childNodes()) {
                 parent.add(child.copy());
             }
             return parent;
@@ -41,14 +41,14 @@ public class ServerTreeNode extends DefaultMutableTreeNode {
         if (isFolder()) {
             throw new IllegalArgumentException("This node is not server");
         }
-        return (Server)userObject;
+        return (Server) userObject;
     }
 
     public String getFolder() {
         if (!isFolder()) {
             throw new IllegalArgumentException("This node is server");
         }
-        return (String)userObject;
+        return (String) userObject;
     }
 
     public ServerTreeNode add(Server server) {
@@ -83,7 +83,7 @@ public class ServerTreeNode extends DefaultMutableTreeNode {
             throw new IllegalArgumentException("This is not folder");
         }
         int count = getChildCount();
-        for (int index=0; index<count; index++) {
+        for (int index = 0; index < count; index++) {
             ServerTreeNode treeNode = getChild(index);
             if (treeNode.isFolder()) continue;
             if (treeNode.getServer().equals(server)) {
@@ -95,14 +95,14 @@ public class ServerTreeNode extends DefaultMutableTreeNode {
     }
 
     public ServerTreeNode getChild(String folder) {
-        for(ServerTreeNode child: childNodes()) {
+        for (ServerTreeNode child : childNodes()) {
             if (child.isFolder() && child.getFolder().equals(folder)) return child;
         }
         return null;
     }
 
     public ServerTreeNode getChild(Server server) {
-        for(ServerTreeNode child: childNodes()) {
+        for (ServerTreeNode child : childNodes()) {
             if (!child.isFolder() && child.getServer().equals(server)) return child;
         }
         return null;
@@ -121,7 +121,7 @@ public class ServerTreeNode extends DefaultMutableTreeNode {
     // Recursively find ServerTreeNode with passed Server
     public ServerTreeNode findServerNode(Server server) {
         if (isFolder()) {
-            for(ServerTreeNode child: childNodes()) {
+            for (ServerTreeNode child : childNodes()) {
                 ServerTreeNode node = child.findServerNode(server);
                 if (node != null) return node;
             }
@@ -138,11 +138,11 @@ public class ServerTreeNode extends DefaultMutableTreeNode {
     }
 
     private ServerTreeNode findPath(TreeNode[] nodes, int head) {
-        if (! theSame( (ServerTreeNode)nodes[head])) return null;
-        if (head == nodes.length-1) return this;
+        if (!theSame((ServerTreeNode) nodes[head])) return null;
+        if (head == nodes.length - 1) return this;
 
-        for (ServerTreeNode child: childNodes()) {
-            ServerTreeNode node = child.findPath(nodes, head+1);
+        for (ServerTreeNode child : childNodes()) {
+            ServerTreeNode node = child.findPath(nodes, head + 1);
             if (node != null) return node;
         }
         return null;
@@ -151,7 +151,7 @@ public class ServerTreeNode extends DefaultMutableTreeNode {
 
     public boolean theSame(ServerTreeNode that) {
         if (isFolder()) {
-            if (! that.isFolder()) return false;
+            if (!that.isFolder()) return false;
             return getFolder().equals(that.getFolder());
         } else {
             if (that.isFolder()) return false;
@@ -165,6 +165,6 @@ public class ServerTreeNode extends DefaultMutableTreeNode {
     }
 
     public String fullPath() {
-        return Stream.of(getPath()).skip(1).map(n->n.toString()).collect(Collectors.joining("/"));
+        return Stream.of(getPath()).skip(1).map(Object::toString).collect(Collectors.joining("/"));
     }
 }

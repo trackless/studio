@@ -2,9 +2,7 @@ package studio.ui;
 
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 
 public class HtmlSelection implements Transferable {
 
@@ -37,7 +35,7 @@ public class HtmlSelection implements Transferable {
     }
 
     @Override
-    public Object getTransferData(DataFlavor dataFlavor) throws UnsupportedFlavorException, IOException {
+    public Object getTransferData(DataFlavor dataFlavor) {
         return new ByteArrayInputStream(html.getBytes());
     }
 }

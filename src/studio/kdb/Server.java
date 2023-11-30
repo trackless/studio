@@ -80,7 +80,7 @@ public class Server {
                 && s.port == port
                 && Objects.equals(s.username, username)
                 && Objects.equals(s.password, password)
-                && Objects.equals(s.authenticationMechanism ,authenticationMechanism)
+                && Objects.equals(s.authenticationMechanism, authenticationMechanism)
                 && s.useTLS == useTLS;
     }
 
@@ -130,7 +130,7 @@ public class Server {
     public String getFullName() {
         if (folder == null) return name;
         String path = folder.fullPath();
-        if (path.length() == 0) return name;
+        if (path.isEmpty()) return name;
         return path + "/" + name;
     }
 
@@ -158,8 +158,8 @@ public class Server {
         return (fullName ? getFullName() : name) + " (" + host + ":" + port + ")";
     }
 
-    public boolean getUseTLS(){
-      return useTLS;
+    public boolean getUseTLS() {
+        return useTLS;
     }
 
     public ServerTreeNode getFolder() {

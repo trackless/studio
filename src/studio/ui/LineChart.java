@@ -11,12 +11,13 @@ import org.jfree.data.time.*;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import studio.kdb.Config;
 import studio.kdb.K;
 import studio.kdb.KTableModel;
 import studio.kdb.ToDouble;
 
 import javax.swing.*;
+import java.util.Locale;
+import java.util.Objects;
 import java.util.TimeZone;
 
 public class LineChart {
@@ -51,7 +52,7 @@ public class LineChart {
 
             frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-            frame.setIconImage(Util.CHART_BIG_ICON.getImage());
+            frame.setIconImage(Objects.requireNonNull(Util.CHART_BIG_ICON).getImage());
 
             frame.pack();
             frame.setVisible(true);
@@ -90,52 +91,52 @@ public class LineChart {
 
                     try {
                         if (klass == K.KDateVector.class) {
-                            series = new TimeSeries(table.getColumnName(col), Day.class);
+                            series = new TimeSeries(table.getColumnName(col));
                             K.KDateVector dates = (K.KDateVector) table.getColumn(0);
 
                             for (int row = 0; row < dates.getLength(); row++) {
                                 K.KDate date = (K.KDate) dates.at(row);
-                                Day day = new Day(date.toDate(), tz);
+                                Day day = new Day(date.toDate(), tz, Locale.getDefault());
                                 addOrUpdate(table, series, row, col, day);
                             }
                         } else if (klass == K.KTimeVector.class) {
-                            series = new TimeSeries(table.getColumnName(col), Millisecond.class);
+                            series = new TimeSeries(table.getColumnName(col));
 
                             K.KTimeVector times = (K.KTimeVector) table.getColumn(0);
                             for (int row = 0; row < table.getRowCount(); row++) {
                                 K.KTime time = (K.KTime) times.at(row);
-                                Millisecond ms = new Millisecond(time.toTime(), tz);
+                                Millisecond ms = new Millisecond(time.toTime(), tz, Locale.getDefault());
                                 addOrUpdate(table, series, row, col, ms);
                             }
                         } else if (klass == K.KTimestampVector.class) {
-                            series = new TimeSeries(table.getColumnName(col), Millisecond.class);
+                            series = new TimeSeries(table.getColumnName(col));
                             K.KTimestampVector dates = (K.KTimestampVector) table.getColumn(0);
 
                             for (int row = 0; row < dates.getLength(); row++) {
                                 K.KTimestamp date = (K.KTimestamp) dates.at(row);
-                                Millisecond day = new Millisecond(new java.util.Date(date.toTimestamp().getTime()), tz);
+                                Millisecond day = new Millisecond(new java.util.Date(date.toTimestamp().getTime()), tz, Locale.getDefault());
                                 addOrUpdate(table, series, row, col, day);
                             }
                         } else if (klass == K.KTimespanVector.class) {
-                            series = new TimeSeries(table.getColumnName(col), Millisecond.class);
+                            series = new TimeSeries(table.getColumnName(col));
 
                             K.KTimespanVector times = (K.KTimespanVector) table.getColumn(0);
                             for (int row = 0; row < table.getRowCount(); row++) {
                                 K.KTimespan time = (K.KTimespan) times.at(row);
-                                Millisecond ms = new Millisecond(time.toTime(), tz);
+                                Millisecond ms = new Millisecond(time.toTime(), tz, Locale.getDefault());
                                 addOrUpdate(table, series, row, col, ms);
                             }
                         } else if (klass == K.KDatetimeVector.class) {
-                            series = new TimeSeries(table.getColumnName(col), Millisecond.class);
+                            series = new TimeSeries(table.getColumnName(col));
                             K.KDatetimeVector times = (K.KDatetimeVector) table.getColumn(0);
 
                             for (int row = 0; row < table.getRowCount(); row++) {
                                 K.KDatetime time = (K.KDatetime) times.at(row);
-                                Millisecond ms = new Millisecond(time.toTimestamp(), tz);
+                                Millisecond ms = new Millisecond(time.toTimestamp(), tz, Locale.getDefault());
                                 addOrUpdate(table, series, row, col, ms);
                             }
                         } else if (klass == K.KMonthVector.class) {
-                            series = new TimeSeries(table.getColumnName(col), Month.class);
+                            series = new TimeSeries(table.getColumnName(col));
                             K.KMonthVector times = (K.KMonthVector) table.getColumn(0);
                             for (int row = 0; row < table.getRowCount(); row++) {
                                 K.Month time = (K.Month) times.at(row);
@@ -146,7 +147,7 @@ public class LineChart {
                                 addOrUpdate(table, series, row, col, month);
                             }
                         } else if (klass == K.KSecondVector.class) {
-                            series = new TimeSeries(table.getColumnName(col), Second.class);
+                            series = new TimeSeries(table.getColumnName(col));
                             K.KSecondVector times = (K.KSecondVector) table.getColumn(0);
                             for (int row = 0; row < table.getRowCount(); row++) {
                                 K.Second time = (K.Second) times.at(row);
@@ -154,7 +155,7 @@ public class LineChart {
                                 addOrUpdate(table, series, row, col, second);
                             }
                         } else if (klass == K.KMinuteVector.class) {
-                            series = new TimeSeries(table.getColumnName(col), Minute.class);
+                            series = new TimeSeries(table.getColumnName(col));
                             K.KMinuteVector times = (K.KMinuteVector) table.getColumn(0);
                             for (int row = 0; row < table.getRowCount(); row++) {
                                 K.Minute time = (K.Minute) times.at(row);
@@ -167,7 +168,7 @@ public class LineChart {
                     }
 
 
-                    if (series.getItemCount() > 0)
+                    if (Objects.requireNonNull(series).getItemCount() > 0)
                         tsc.addSeries(series);
                 }
 
@@ -190,7 +191,7 @@ public class LineChart {
                         System.err.println("Error adding to series");
                     }
 
-                    if (series.getItemCount() > 0)
+                    if (Objects.requireNonNull(series).getItemCount() > 0)
                         xysc.addSeries(series);
                 }
 
@@ -199,10 +200,7 @@ public class LineChart {
         }
 
         if (ds != null) {
-            boolean legend = false;
-
-            if (ds.getSeriesCount() > 1)
-                legend = true;
+            boolean legend = ds.getSeriesCount() > 1;
 
             if (ds instanceof XYSeriesCollection)
                 return ChartFactory.createXYLineChart("",
@@ -213,14 +211,13 @@ public class LineChart {
                         legend,
                         true,
                         true);
-            else if (ds instanceof TimeSeriesCollection)
-                return ChartFactory.createTimeSeriesChart("",
-                        "",
-                        "",
-                        ds,
-                        legend,
-                        true,
-                        true);
+            else return ChartFactory.createTimeSeriesChart("",
+                    "",
+                    "",
+                    ds,
+                    legend,
+                    true,
+                    true);
         }
 
         return null;

@@ -1,7 +1,7 @@
 package studio.kdb;
 
 public class DictTableModel extends KTableModel {
-    private K.Dict dict;
+    private final K.Dict dict;
 
     public DictTableModel(K.Dict obj) {
         this.dict = obj;
@@ -10,9 +10,7 @@ public class DictTableModel extends KTableModel {
     public boolean isKey(int column) {
         K.Flip f = (K.Flip) dict.x;
 
-        if (column < f.x.getLength())
-            return true;
-        return false;
+        return column < f.x.getLength();
     }
 
     public int getColumnCount() {
@@ -31,7 +29,6 @@ public class DictTableModel extends KTableModel {
 
     public K.KBaseVector getColumn(int col) {
         K.Flip f = (K.Flip) dict.x;
-        K.KBaseVector v = null;
 
         if (col >= f.x.getLength()) {
             col -= f.x.getLength();
@@ -40,4 +37,4 @@ public class DictTableModel extends KTableModel {
 
         return (K.KBaseVector) f.y.at(col);
     }
-};
+}

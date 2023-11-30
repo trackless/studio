@@ -2,6 +2,7 @@ package studio.ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.net.URL;
 
@@ -19,7 +20,7 @@ public class Util {
     public final static ImageIcon CHECK_ICON = getImage(IMAGE_BASE2 + "check2.png");
 
     public final static ImageIcon UNDO_ICON = getImage(IMAGE_BASE2 + "undo.png");
-    public final static ImageIcon REDO_ICON =getImage(IMAGE_BASE2 + "redo.png");
+    public final static ImageIcon REDO_ICON = getImage(IMAGE_BASE2 + "redo.png");
     public final static ImageIcon COPY_ICON = getImage(IMAGE_BASE2 + "copy.png");
     public final static ImageIcon CUT_ICON = getImage(IMAGE_BASE2 + "cut.png");
     public final static ImageIcon PASTE_ICON = getImage(IMAGE_BASE2 + "paste.png");
@@ -46,7 +47,7 @@ public class Util {
     public final static ImageIcon CONSOLE_ICON = getImage(IMAGE_BASE2 + "console.png");
     public final static ImageIcon DATA_COPY_ICON = getImage(IMAGE_BASE2 + "data_copy.png");
     public final static ImageIcon CHART_BIG_ICON = Util.getImage(IMAGE_BASE2 + "chart_24.png");
-    public final static ImageIcon COLUMN_ICON = getImage(IMAGE_BASE2 +"column.png");
+    public final static ImageIcon COLUMN_ICON = getImage(IMAGE_BASE2 + "column.png");
     public final static ImageIcon SORT_ASC_ICON = getImage(IMAGE_BASE + "sort_ascending.png");
     public final static ImageIcon SORT_AZ_ASC_ICON = getImage(IMAGE_BASE + "sort_az_ascending.png");
     public final static ImageIcon SORT_DESC_ICON = getImage(IMAGE_BASE + "sort_descending.png");
@@ -67,7 +68,7 @@ public class Util {
         return new ImageIcon(image);
     }
 
-    public static void centerChildOnParent(Component child,Component parent) {
+    public static void centerChildOnParent(Component child, Component parent) {
         Point parentlocation = parent.getLocation();
         Dimension oursize = child.getPreferredSize();
         Dimension parentsize = parent.getSize();
@@ -75,14 +76,14 @@ public class Util {
         int x = parentlocation.x + (parentsize.width - oursize.width) / 2;
         int y = parentlocation.y + (parentsize.height - oursize.height) / 2;
 
-        x = Math.max(0,x);  // keep the corner on the screen
-        y = Math.max(0,y);  //
+        x = Math.max(0, x);  // keep the corner on the screen
+        y = Math.max(0, y);  //
 
-        child.setLocation(x,y);
+        child.setLocation(x, y);
     }
 
     public static String getAcceleratorString(KeyStroke keyStroke) {
-        return KeyEvent.getKeyModifiersText(keyStroke.getModifiers()) + (MAC_OS_X ? "": "+") +
+        return InputEvent.getModifiersExText(keyStroke.getModifiers()) + (MAC_OS_X ? "" : "+") +
                 KeyEvent.getKeyText(keyStroke.getKeyCode());
     }
 

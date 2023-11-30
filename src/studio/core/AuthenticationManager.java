@@ -3,9 +3,8 @@ package studio.core;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.net.JarURLConnection;
-import java.net.URL;
-import java.net.URLClassLoader;
+import java.lang.reflect.InvocationTargetException;
+import java.net.*;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,7 +14,7 @@ import java.util.jar.JarFile;
 
 public class AuthenticationManager {
     private static AuthenticationManager instance;
-    private Map classMap = new HashMap();
+    private final Map classMap = new HashMap();
 
     public Class lookup(String autheticationMethod) {
         return (Class) classMap.get(autheticationMethod);
@@ -30,15 +29,12 @@ public class AuthenticationManager {
         if (instance == null)
             instance = new AuthenticationManager();
 
-        /*      String [] x=instance.getAuthenticationMechanisms();
-        for(int i= 0; i <x.length;i++)
-        System.out.println(x[i]);
-         */ return instance;
+        return instance;
     }
 
     private AuthenticationManager() {
         DefaultAuthenticationMechanism dam = new DefaultAuthenticationMechanism();
-        classMap.put(dam.getMechanismName(),dam.getClass());
+        classMap.put(dam.getMechanismName(), dam.getClass());
 
         String curDir = System.getProperty("user.dir");
         curDir = curDir + "/plugins";
@@ -49,18 +45,14 @@ public class AuthenticationManager {
         if (!dir.exists())
             return;
 
-        FilenameFilter filter = new FilenameFilter() {
-            public boolean accept(File dir,String name) {
-                return name.endsWith(".jar");
-            }
-        };
+        FilenameFilter filter = (dir1, name) -> name.endsWith(".jar");
 
         String[] children = dir.list(filter);
         if (children != null)
-            for (int child = 0;child < children.length;child++) {
-                String filename = dir.getAbsolutePath() + "/" + children[child];
+            for (String s : children) {
+                String filename = dir.getAbsolutePath() + "/" + s;
                 try {
-                    URL url = new URL("jar:file:" + filename + "/!/");
+                    URL url = new URI("jar:file" + filename + "/!;").toURL();
                     JarURLConnection conn = (JarURLConnection) url.openConnection();
                     JarFile jarFile = conn.getJarFile();
 
@@ -74,16 +66,21 @@ public class AuthenticationManager {
                             try {
                                 Class c = loader.loadClass(externalName);
                                 if (IAuthenticationMechanism.class.isAssignableFrom(c)) {
-                                    IAuthenticationMechanism am = (IAuthenticationMechanism) c.newInstance();
+                                    IAuthenticationMechanism am = (IAuthenticationMechanism) c.getDeclaredConstructor().newInstance();
                                     classMap.put(am.getMechanismName(), c);
                                 }
-                            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException | Error e1) {
+                            } catch (ClassNotFoundException | IllegalAccessException | InstantiationException |
+                                     Error ignored) {
+                            } catch (InvocationTargetException | NoSuchMethodException ex) {
+                                throw new RuntimeException(ex);
                             }
                         }
                     }
                 } catch (IOException e) {
                     System.err.println("Error loading plugin: " + filename);
                     e.printStackTrace(System.err);
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
                 }
             }
     }

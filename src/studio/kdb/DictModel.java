@@ -2,7 +2,7 @@ package studio.kdb;
 
 public class DictModel extends KTableModel {
 
-    private K.Dict dict;
+    private final K.Dict dict;
 
     public DictModel(K.Dict dict) {
         this.dict = dict;

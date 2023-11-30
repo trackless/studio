@@ -5,13 +5,13 @@ import java.awt.Graphics;
 import javax.swing.Icon;
 
 public class BlankIcon implements Icon {
-    private Icon i;
+    private final Icon i;
 
     public BlankIcon(Icon i) {
         this.i = i;
     }
 
-    public void paintIcon(Component component,Graphics g,int i,int i0) {
+    public void paintIcon(Component component, Graphics g, int i, int i0) {
     }
 
     public int getIconWidth() {
@@ -21,4 +21,4 @@ public class BlankIcon implements Icon {
     public int getIconHeight() {
         return i.getIconHeight();
     }
-};
+}

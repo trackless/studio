@@ -1,6 +1,5 @@
 package studio.ui;
 
-import studio.kdb.Config;
 import studio.kdb.K;
 import studio.kdb.TableHeaderRenderer;
 import studio.kdb.TableRowHeader;
@@ -131,21 +130,13 @@ public class QGrid extends JPanel {
         table.setShowHorizontalLines(true);
 
         table.setDragEnabled(true);
-        // table.setRowSelectionAllowed(true);
-        // table.setColumnSelectionAllowed(false);
-        // table.setCellSelectionEnabled(true);
         table.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
         table.setCellSelectionEnabled(true);
-
-        //     table.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_C,Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()),
-        //             TransferHandler.getCopyAction().getValue(Action.NAME));
 
         ToolTipManager.sharedInstance().unregisterComponent(table);
         ToolTipManager.sharedInstance().unregisterComponent(table.getTableHeader());
 
         DefaultTableCellRenderer dcr = new CellRenderer(table);
-        //    dcr.setHorizontalAlignment(SwingConstants.RIGHT);
-        //    dcr.setVerticalAlignment(SwingConstants.CENTER);
 
         for (int i = 0; i < model.getColumnCount(); i++) {
             TableColumn col = table.getColumnModel().getColumn(i);
@@ -182,8 +173,7 @@ public class QGrid extends JPanel {
 
         scrollPane.setWheelScrollingEnabled(true);
         scrollPane.getViewport().setBackground(UIManager.getColor("Table.background"));
-        //      scrollPane.setBorder(null);
-//        scrollPane.setViewportBorder(null);
+
         JLabel rowCountLabel = new JLabel("");
         rowCountLabel.setHorizontalAlignment(SwingConstants.RIGHT);
         rowCountLabel.setVerticalAlignment(SwingConstants.CENTER);

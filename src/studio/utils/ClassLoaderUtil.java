@@ -8,7 +8,7 @@ public class ClassLoaderUtil {
         Properties properties = System.getProperties();
         String fileSeparator = properties.getProperty("file.separator");
         char fsc = fileSeparator.charAt(0);
-        String path = name.replace('.',fsc);
+        String path = name.replace('.', fsc);
         path += ".class";
         return path;
     }
@@ -16,7 +16,7 @@ public class ClassLoaderUtil {
     static protected byte[] readFile(String filename) throws IOException {
         File file = new File(filename);
         long len = file.length();
-        byte data[] = new byte[(int) len];
+        byte[] data = new byte[(int) len];
         FileInputStream fin = new FileInputStream(file);
         int r = fin.read(data);
         if (r != len)
@@ -30,22 +30,22 @@ public class ClassLoaderUtil {
         return readFile(path);
     }
 
-    static protected void copyFile(OutputStream out,InputStream in)
-        throws IOException {
-        byte buffer[] = new byte[4096];
+    static protected void copyFile(OutputStream out, InputStream in)
+            throws IOException {
+        byte[] buffer = new byte[4096];
 
         while (true) {
             int r = in.read(buffer);
             if (r <= 0)
                 break;
-            out.write(buffer,0,r);
+            out.write(buffer, 0, r);
         }
     }
 
-    static protected void copyFile(OutputStream out,String infile)
-        throws IOException {
+    static protected void copyFile(OutputStream out, String infile)
+            throws IOException {
         FileInputStream fin = new FileInputStream(infile);
-        copyFile(out,fin);
+        copyFile(out, fin);
         fin.close();
     }
 }
